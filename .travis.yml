@@ -1,0 +1,11 @@
+language: go
+
+go:
+  - 1.9
+  - tip
+
+before_install:
+  - make setup get
+
+script:
+  - make ci_test
