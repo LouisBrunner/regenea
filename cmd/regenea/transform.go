@@ -6,8 +6,11 @@ import (
 
 	"github.com/LouisBrunner/regenea/genea"
 
+	"github.com/Songmu/prompter"
 	"gopkg.in/urfave/cli.v1"
 )
+
+const defaultOutVersion = 0
 
 func getTransformCommand() cli.Command {
 	return cli.Command{
@@ -24,7 +27,7 @@ func getTransformCommand() cli.Command {
 			},
 			cli.StringFlag{
 				Name:  "out",
-				Usage: "output file where to write the transformed file  (default to stdout)",
+				Usage: "output file where to write the transformed file (default to stdout)",
 			},
 			cli.StringFlag{
 				Name:  "outform",
@@ -33,6 +36,7 @@ func getTransformCommand() cli.Command {
 			cli.UintFlag{
 				Name:  "outversion",
 				Usage: "when using `outform` with `genea`, you can specify which version should be output",
+				Value: defaultOutVersion,
 			},
 			cli.BoolFlag{
 				Name:  "pretty",
@@ -43,8 +47,22 @@ func getTransformCommand() cli.Command {
 	}
 }
 
+func confirmInformationLoss(conversion string) bool {
+	msg := fmt.Sprintf(
+		"There is a loss of information going %s, are you sure you want to convert?",
+		conversion,
+	)
+	return prompter.YN(msg, false)
+}
+
 func doTransformCommand(ctxt *cli.Context) error {
-	tree, err := helperRead(ctxt.String("in"), ctxt.String("inform"))
+	format := ctxt.String("outform")
+	if format == "" {
+		return fmt.Errorf("missing output format")
+	}
+
+	inform := ctxt.String("inform")
+	tree, inversion, err := helperRead(ctxt.String("in"), inform)
 	if err != nil {
 		return err
 	}
@@ -57,11 +75,17 @@ func doTransformCommand(ctxt *cli.Context) error {
 		}
 	}
 
-	switch format := ctxt.String("outform"); format {
-	case "genea":
+	switch format {
+	case formGenea:
 		version := genea.VersionV2
 		switch versionRaw := ctxt.Uint("outversion"); versionRaw {
+		case defaultOutVersion:
 		case 1:
+			if inform == formGenea && inversion == genea.VersionV2 {
+				if !confirmInformationLoss("from genea V2 to genea V1") {
+					return fmt.Errorf("transformation aborted")
+				}
+			}
 			version = genea.VersionV1
 		case 2:
 		default:

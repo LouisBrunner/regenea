@@ -7,7 +7,7 @@ import (
 func getCheckCommand() cli.Command {
 	return cli.Command{
 		Name:  "check",
-		Usage: "check that the given genea file is valid",
+		Usage: "check that the given genea file is valid (if no file is specified, stdin is used)",
 		Flags: []cli.Flag{
 			cli.StringFlag{
 				Name:  "in",
@@ -19,6 +19,11 @@ func getCheckCommand() cli.Command {
 }
 
 func doCheckCommand(ctxt *cli.Context) error {
-	_, err := helperRead(ctxt.String("in"), "genea")
+	infile := ""
+	if ctxt.NArg() > 0 {
+		infile = ctxt.Args()[0]
+	}
+
+	_, _, err := helperRead(infile, "genea")
 	return err
 }

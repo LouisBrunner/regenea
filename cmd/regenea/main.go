@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"os"
 
 	"gopkg.in/urfave/cli.v1"
@@ -27,6 +27,7 @@ func main() {
 	app := getCLI()
 	err := app.Run(os.Args)
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Printf("error: %v\n", err)
+		os.Exit(1)
 	}
 }

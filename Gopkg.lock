@@ -2,6 +2,92 @@
 
 
 [[projects]]
+  digest = "1:cf8e4e10e49fef1330e60c780258ea3c1471747f62e52e52c7e96307a1fea34b"
+  name = "github.com/Songmu/prompter"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "b5721e8d556682bcef33262731d98a39dee14dc4"
+  version = "0.1.0"
+
+[[projects]]
+  digest = "1:e1ff887e232b2d8f4f7c7db15a5fac7be418025afc4dda53c59c765dbb5aa6b4"
+  name = "github.com/go-playground/locales"
+  packages = [
+    ".",
+    "currency",
+  ]
+  pruneopts = "UT"
+  revision = "f63010822830b6fe52288ee52d5a1151088ce039"
+  version = "v0.12.1"
+
+[[projects]]
+  digest = "1:e022cf244bcac1b6ef933f1a2e0adcf6a6dfd7b872d8d41e4d4179bb09a87cbc"
+  name = "github.com/go-playground/universal-translator"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "b32fa301c9fe55953584134cb6853a13c87ec0a1"
+  version = "v0.16.0"
+
+[[projects]]
+  digest = "1:3e551bbb3a7c0ab2a2bf4660e7fcad16db089fdcfbb44b0199e62838038623ea"
+  name = "github.com/json-iterator/go"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "1624edc4454b8682399def8740d46db5e4362ba4"
+  version = "v1.1.5"
+
+[[projects]]
+  digest = "1:0981502f9816113c9c8c4ac301583841855c8cf4da8c72f696b3ebedf6d0e4e5"
+  name = "github.com/mattn/go-isatty"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c"
+  version = "v0.0.4"
+
+[[projects]]
+  digest = "1:33422d238f147d247752996a26574ac48dcf472976eda7f5134015f06bf16563"
+  name = "github.com/modern-go/concurrent"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "bacd9c7ef1dd9b15be4a9909b8ac7a4e313eec94"
+  version = "1.0.3"
+
+[[projects]]
+  digest = "1:e32bdbdb7c377a07a9a46378290059822efdce5c8d96fe71940d87cb4f918855"
+  name = "github.com/modern-go/reflect2"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "4b7aa43c6742a2c18fdef89dd197aaae7dac7ccd"
+  version = "1.0.1"
+
+[[projects]]
+  branch = "master"
+  digest = "1:3f3a05ae0b95893d90b9b3b5afdb79a9b3d96e4e36e099d841ae602e4aca0da8"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  pruneopts = "UT"
+  revision = "e4dc69e5b2fd71dcaf8bd5d054eb936deb78d1fa"
+
+[[projects]]
+  branch = "master"
+  digest = "1:6a875550c3b582f6c2d7e2ce44aba792511f00016d7c46b0a4fb26f730ef3058"
+  name = "golang.org/x/sys"
+  packages = [
+    "unix",
+    "windows",
+  ]
+  pruneopts = "UT"
+  revision = "66b7b1311ac80bbafcd2daeef9a5e6e2cd1e2399"
+
+[[projects]]
+  digest = "1:2c6a8f26c364b006a27b8090a9583fcc4b7865583fcf93f99a20fce339e87192"
+  name = "gopkg.in/go-playground/validator.v9"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "1fa3c8d6336562f0a3f95c73593ee2b57ff4da11"
+  version = "v9.23.0"
+
+[[projects]]
   digest = "1:b24d38b282bacf9791408a080f606370efa3d364e4b5fd9ba0f7b87786d3b679"
   name = "gopkg.in/urfave/cli.v1"
   packages = ["."]
@@ -12,6 +98,11 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  input-imports = ["gopkg.in/urfave/cli.v1"]
+  input-imports = [
+    "github.com/Songmu/prompter",
+    "github.com/json-iterator/go",
+    "gopkg.in/go-playground/validator.v9",
+    "gopkg.in/urfave/cli.v1",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
