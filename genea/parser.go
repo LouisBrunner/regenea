@@ -50,7 +50,7 @@ func Parse(in io.Reader) (*Tree, Version, error) {
 func initTree(comments string, people int) *Tree {
 	return &Tree{
 		Comments: comments,
-		People:   make([]Person, people),
+		People:   make([]*Person, people),
 		ByID:     make(map[string]*Person),
 	}
 }
@@ -74,13 +74,13 @@ func addPerson(tree *Tree, i int, person *Person) error {
 	if tree.ByID[person.ID] != nil {
 		return fmt.Errorf("duplicate person ID: `%s`", person.ID)
 	}
-	tree.People[i] = *person
+	tree.People[i] = person
 	tree.ByID[person.ID] = person
 	return nil
 }
 
 func getPerson(tree *Tree, personID *json.PersonID) (*Person, error) {
-	if personID == nil {
+	if personID == nil || string(*personID) == "" {
 		return nil, nil
 	}
 	id := string(*personID)

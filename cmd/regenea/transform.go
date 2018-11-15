@@ -91,7 +91,7 @@ func doTransformCommand(ctxt *cli.Context) error {
 		default:
 			return fmt.Errorf("unknown version: `%d`", versionRaw)
 		}
-		err = tree.Format(out, version)
+		err = tree.Format(out, ctxt.Bool("pretty"), version)
 		if err != nil {
 			return err
 		}

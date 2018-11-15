@@ -2,7 +2,6 @@ package genea
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/LouisBrunner/regenea/genea/json"
 )
@@ -14,30 +13,13 @@ func addUnionToPartner(union *Union, partner *Person) {
 
 	partner.Partners = append(partner.Partners, union)
 	for _, child := range union.Issues {
-		partner.Children = append(partner.Children, child)
+		if !listHasPerson(partner.Children, child) {
+			partner.Children = append(partner.Children, child)
+		}
 	}
 }
 
-func addChildrenToUnion(tree *Tree, union *Union, i int, childID json.PersonID) error {
-	child, err := getPerson(tree, &childID)
-	if err != nil {
-		return fmt.Errorf("%v (in relation %d)", err, i)
-	}
-
-	if child.flags.issuesFound {
-		return fmt.Errorf("relation %d: `%s` is already listed in another `issues`", i, child.ID)
-	}
-	child.flags.issuesFound = true
-
-	// TODO: don't assume that
-	child.Father = union.Person1
-	child.Mother = union.Person2
-
-	union.Issues = append(union.Issues, child)
-	return nil
-}
-
-func createUnion(tree *Tree, relation *json.Relation, i int) (*Union, error) {
+func createUnion(tree *Tree, relation *json.RelationCommon, i int) (*Union, error) {
 	union := Union{
 		Comments: relation.Comments,
 	}
@@ -47,13 +29,6 @@ func createUnion(tree *Tree, relation *json.Relation, i int) (*Union, error) {
 		union.Kind = UnionWedding
 	case "civil":
 		union.Kind = UnionCivil
-	}
-
-	if relation.Begin != nil {
-		union.Begin = time.Time(*relation.Begin)
-	}
-	if relation.End != nil {
-		union.End = time.Time(*relation.End)
 	}
 
 	person1, err := getPerson(tree, relation.Person1)
@@ -86,29 +61,4 @@ func addSibling(child1 *Person, child2 *Person) {
 	if !listHasPerson(child2.Siblings, child1) {
 		child2.Siblings = append(child2.Siblings, child1)
 	}
-}
-
-func addRelations(tree *Tree, relations []json.Relation) error {
-	for i, relation := range relations {
-		union, err := createUnion(tree, &relation, i)
-		if err != nil {
-			return err
-		}
-
-		if relation.Issues != nil {
-			for _, childID := range *relation.Issues {
-				err = addChildrenToUnion(tree, union, i, childID)
-				if err != nil {
-					return err
-				}
-			}
-		}
-
-		for i, child := range union.Issues {
-			for _, child2 := range union.Issues[i+1:] {
-				addSibling(child, child2)
-			}
-		}
-	}
-	return nil
 }

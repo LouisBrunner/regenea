@@ -28,10 +28,14 @@ type Union struct {
 	Kind     UnionKind
 	Person1  *Person
 	Person2  *Person
-	Begin    time.Time
-	End      time.Time
+	Begin    EventCore
+	End      *EventCore
 	Issues   []*Person
 	Comments string
+
+	flags struct {
+		serialized bool
+	}
 }
 
 type Sex int
@@ -51,6 +55,7 @@ type Person struct {
 	Events   []Event
 	Comments string
 
+	Family   *Union
 	Father   *Person
 	Mother   *Person
 	Partners []*Union
@@ -64,6 +69,6 @@ type Person struct {
 
 type Tree struct {
 	Comments string
-	People   []Person
+	People   []*Person
 	ByID     map[string]*Person
 }

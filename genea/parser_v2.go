@@ -24,6 +24,79 @@ func parseEventV2(jsonEvent *json.Event) *Event {
 	}
 }
 
+func addChildrenOf(parent *Person, union *Union) bool {
+	if parent == nil {
+		return false
+	}
+
+	otherParent := union.Person2
+	if parent == otherParent {
+		otherParent = union.Person1
+	}
+
+	for _, child := range parent.Children {
+		if child.Father == parent && child.Mother == otherParent ||
+			child.Father == otherParent && child.Mother == parent {
+			union.Issues = append(union.Issues, child)
+		}
+	}
+
+	return true
+}
+
+func addRelationsV2(tree *Tree, relations []json.RelationV2) error {
+	for i, relation := range relations {
+		union, err := createUnion(tree, &relation.RelationCommon, i)
+		if err != nil {
+			return err
+		}
+
+		if relation.Begin != nil {
+			union.Begin = *parseEventCoreV2(relation.Begin)
+		}
+		if relation.End != nil {
+			union.End = parseEventCoreV2(relation.End)
+		}
+
+		if !addChildrenOf(union.Person1, union) {
+			addChildrenOf(union.Person2, union)
+		}
+	}
+	return nil
+}
+
+func addParentsToChildren(tree *Tree, people []json.PersonV2) error {
+	for i, person := range tree.People {
+		jsonPerson := people[i]
+		if jsonPerson.Parents != nil {
+			parent, err := getPerson(tree, &jsonPerson.Parents.Father)
+			if err != nil {
+				return err
+			}
+			person.Father = parent
+			if parent != nil {
+				person.Father.Children = append(person.Father.Children, person)
+				for _, child := range person.Father.Children {
+					addSibling(person, child)
+				}
+			}
+
+			parent, err = getPerson(tree, &jsonPerson.Parents.Mother)
+			if err != nil {
+				return err
+			}
+			person.Mother = parent
+			if parent != nil {
+				person.Mother.Children = append(person.Mother.Children, person)
+				for _, child := range person.Mother.Children {
+					addSibling(person, child)
+				}
+			}
+		}
+	}
+	return nil
+}
+
 func ImportV2(jsonRepr *json.V2) (*Tree, error) {
 	tree := initTree(jsonRepr.Comments, len(*jsonRepr.People))
 	for i, jsonPerson := range *jsonRepr.People {
@@ -46,5 +119,11 @@ func ImportV2(jsonRepr *json.V2) (*Tree, error) {
 			return nil, err
 		}
 	}
-	return tree, addRelations(tree, *jsonRepr.Relations)
+
+	err := addParentsToChildren(tree, *jsonRepr.People)
+	if err != nil {
+		return nil, err
+	}
+
+	return tree, addRelationsV2(tree, *jsonRepr.Relations)
 }

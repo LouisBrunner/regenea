@@ -16,14 +16,11 @@ type PersonCommon struct {
 	Comments string   `json:"comments,omitempty"`
 }
 
-type Relation struct {
-	Type     string      `json:"type" validate:"required,oneof=wedding civil"`
-	Person1  *PersonID   `json:"person1,omitempty"`
-	Person2  *PersonID   `json:"person2,omitempty"`
-	Issues   *[]PersonID `json:"issues,omitempty" validate:"omitempty,min=1"`
-	Begin    *Date       `json:"begin,omitempty"`
-	End      *Date       `json:"end,omitempty" validate:"omitempty,gtefield=Begin"`
-	Comments string      `json:"comments,omitempty"`
+type RelationCommon struct {
+	Type     string    `json:"type" validate:"required,oneof=wedding civil"`
+	Comments string    `json:"comments,omitempty"`
+	Person1  *PersonID `json:"person1,omitempty"`
+	Person2  *PersonID `json:"person2,omitempty"`
 }
 
 type Date time.Time

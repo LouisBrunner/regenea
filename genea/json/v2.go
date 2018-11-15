@@ -2,17 +2,18 @@ package json
 
 type V2 struct {
 	Header
-	Comments  string      `json:"comments,omitempty"`
-	People    *[]personV2 `json:"people" validate:"required,dive,min=1"`
-	Relations *[]Relation `json:"relations" validate:"required,dive,min=1"`
+	Comments  string        `json:"comments,omitempty"`
+	People    *[]PersonV2   `json:"people" validate:"required,dive,min=1"`
+	Relations *[]RelationV2 `json:"relations" validate:"required,dive,min=1"`
 }
 
-type personV2 struct {
+type PersonV2 struct {
 	PersonCommon
-	Names  *Names       `json:"names" validate:"required"`
-	Birth  *EventCommon `json:"birth,omitempty"`
-	Death  *EventCommon `json:"death,omitempty"`
-	Events *[]Event     `json:"events,omitempty" validate:"omitempty,dive,min=1"`
+	Names   *Names       `json:"names" validate:"required"`
+	Parents *Parents     `json:"parents,omitempty"`
+	Birth   *EventCommon `json:"birth,omitempty"`
+	Death   *EventCommon `json:"death,omitempty"`
+	Events  *[]Event     `json:"events,omitempty" validate:"omitempty,dive,min=1"`
 }
 
 type Names struct {
@@ -20,6 +21,11 @@ type Names struct {
 	Middle          string `json:"middle,omitempty"`
 	Last            string `json:"last,omitempty"`
 	AlternativeName string `json:"alternative,omitempty"`
+}
+
+type Parents struct {
+	Father PersonID `json:"father,omitempty"`
+	Mother PersonID `json:"mother,omitempty"`
 }
 
 type EventCommon struct {
@@ -31,4 +37,10 @@ type EventCommon struct {
 type Event struct {
 	EventCommon
 	Title string `json:"title" validate:"required"`
+}
+
+type RelationV2 struct {
+	RelationCommon
+	Begin *EventCommon `json:"begin,omitempty"`
+	End   *EventCommon `json:"end,omitempty"`
 }

@@ -2,12 +2,12 @@ package json
 
 type V1 struct {
 	Header
-	Comments  string      `json:"comments,omitempty"`
-	People    *[]personV1 `json:"people" validate:"required,dive,min=1"`
-	Relations *[]Relation `json:"relations" validate:"required,dive,min=1"`
+	Comments  string        `json:"comments,omitempty"`
+	People    *[]PersonV1   `json:"people" validate:"required,dive,min=1"`
+	Relations *[]RelationV1 `json:"relations" validate:"required,dive,min=1"`
 }
 
-type personV1 struct {
+type PersonV1 struct {
 	PersonCommon
 	FirstName  string `json:"first_name,omitempty"`
 	MiddleName string `json:"middle_name,omitempty"`
@@ -15,4 +15,11 @@ type personV1 struct {
 	Birthday   *Date  `json:"birthday,omitempty"`
 	Deathday   *Date  `json:"deathday,omitempty" validate:"omitempty,gtefield=Birthday"`
 	Alive      *bool  `json:"alive,omitempty"`
+}
+
+type RelationV1 struct {
+	RelationCommon
+	Issues *[]PersonID `json:"issues,omitempty" validate:"omitempty,min=1"`
+	Begin  *Date       `json:"begin,omitempty"`
+	End    *Date       `json:"end,omitempty" validate:"omitempty,gtefield=Begin"`
 }
