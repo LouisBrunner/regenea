@@ -10,7 +10,7 @@ import (
 
 var val *validator.Validate
 
-const dateFormat = "2006-01-02"
+const DateFormat = "2006-01-02"
 
 func init() {
 	val = validator.New()
@@ -27,7 +27,7 @@ func Parse(content []byte, data interface{}) error {
 
 func (dt *Date) UnmarshalJSON(b []byte) error {
 	s := strings.Trim(string(b), "\"")
-	parsed, err := time.Parse(dateFormat, s)
+	parsed, err := time.Parse(DateFormat, s)
 	if err != nil {
 		return err
 	}
@@ -36,5 +36,5 @@ func (dt *Date) UnmarshalJSON(b []byte) error {
 }
 
 func (dt *Date) MarshalJSON() ([]byte, error) {
-	return []byte(time.Time(*dt).Format("\"" + dateFormat + "\"")), nil
+	return []byte(time.Time(*dt).Format("\"" + DateFormat + "\"")), nil
 }

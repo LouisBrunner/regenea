@@ -1,0 +1,21 @@
+package procs
+
+import (
+	"github.com/LouisBrunner/regenea/genea"
+)
+
+type NAME struct {
+}
+
+func (p *NAME) ProcessPerson(person *genea.Person) {
+}
+
+func (p *NAME) ProcessUnion(union *genea.Union) {
+}
+
+func (p *NAME) Finish() {
+}
+
+func (p *NAME) Output() (string, interface{}) {
+	return CategoryGeneral, nil
+}

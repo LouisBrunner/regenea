@@ -37,6 +37,7 @@ func addChildrenOf(parent *Person, union *Union) bool {
 	for _, child := range parent.Children {
 		if child.Father == parent && child.Mother == otherParent ||
 			child.Father == otherParent && child.Mother == parent {
+			child.Family = union
 			union.Issues = append(union.Issues, child)
 		}
 	}
@@ -57,6 +58,7 @@ func addRelationsV2(tree *Tree, relations []json.RelationV2) error {
 		if relation.End != nil {
 			union.End = parseEventCoreV2(relation.End)
 		}
+		// TODO: check dates order
 
 		if !addChildrenOf(union.Person1, union) {
 			addChildrenOf(union.Person2, union)

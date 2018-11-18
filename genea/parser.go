@@ -44,6 +44,10 @@ func Parse(in io.Reader) (*Tree, Version, error) {
 		return nil, 0, fmt.Errorf("unknown version: `%d`", version)
 	}
 
+	if err == nil {
+		err = tree.validate()
+	}
+
 	return tree, version, err
 }
 

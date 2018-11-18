@@ -10,6 +10,14 @@
   version = "0.1.0"
 
 [[projects]]
+  digest = "1:6f9339c912bbdda81302633ad7e99a28dfa5a639c864061f1929510a9a64aa74"
+  name = "github.com/dustin/go-humanize"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "9f541cc9db5d55bce703bd99987c9d5cb8eea45e"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:e1ff887e232b2d8f4f7c7db15a5fac7be418025afc4dda53c59c765dbb5aa6b4"
   name = "github.com/go-playground/locales"
   packages = [
@@ -100,6 +108,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/Songmu/prompter",
+    "github.com/dustin/go-humanize",
     "github.com/json-iterator/go",
     "gopkg.in/go-playground/validator.v9",
     "gopkg.in/urfave/cli.v1",

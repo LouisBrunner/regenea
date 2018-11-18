@@ -62,6 +62,7 @@ func addRelationsV1(tree *Tree, relations []json.RelationV1) error {
 		if relation.End != nil {
 			union.End = parseEventV1(relation.End)
 		}
+		// TODO: check dates order
 
 		if relation.Issues != nil {
 			for _, childID := range *relation.Issues {

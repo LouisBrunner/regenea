@@ -20,7 +20,7 @@ type Names struct {
 	First           string `json:"first,omitempty"`
 	Middle          string `json:"middle,omitempty"`
 	Last            string `json:"last,omitempty"`
-	AlternativeName string `json:"alternative,omitempty"`
+	Alternative string `json:"alternative,omitempty"`
 }
 
 type Parents struct {

@@ -54,6 +54,10 @@ func createUnion(tree *Tree, relation *json.RelationCommon, i int) (*Union, erro
 }
 
 func addSibling(child1 *Person, child2 *Person) {
+	if child1 == child2 {
+		return
+	}
+
 	if !listHasPerson(child1.Siblings, child2) {
 		child1.Siblings = append(child1.Siblings, child2)
 	}
