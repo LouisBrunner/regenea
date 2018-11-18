@@ -7,6 +7,8 @@ import (
 	"gopkg.in/urfave/cli.v1"
 )
 
+// TODO: add display/search for person
+
 func getCLI() *cli.App {
 	app := cli.NewApp()
 	app.Name = "regenea"

@@ -14,9 +14,11 @@ func getReportCommand() cli.Command {
 		Name:  "report",
 		Usage: "display different stats about your tree (if no file is specified, stdin is used)",
 		Flags: []cli.Flag{
-			cli.StringFlag{
-				Name:  "in",
-				Usage: "input file to transform (default to stdin)",
+			inField,
+			subsetField,
+			cli.BoolFlag{
+				Name:  "pretty",
+				Usage: "prettify the output",
 			},
 		},
 		Action: doReportCommand,
@@ -29,12 +31,16 @@ func doReportCommand(ctxt *cli.Context) error {
 		infile = ctxt.Args()[0]
 	}
 
-	tree, _, err := helperRead(infile, "genea")
+	tree, _, err := helperRead(infile, "genea", ctxt.String("subset"))
 	if err != nil {
 		return err
 	}
 
 	return report.Process(tree, os.Stdout, func(v interface{}) ([]byte, error) {
-		return json.MarshalIndent(v, "", "  ")
+		if ctxt.Bool("pretty") {
+			return json.MarshalIndent(v, "", "  ")
+		} else {
+			return json.Marshal(v)
+		}
 	})
 }

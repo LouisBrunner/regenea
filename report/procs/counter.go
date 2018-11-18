@@ -51,7 +51,13 @@ func (p *Counter) Finish() {
 
 func (p *Counter) Output() (string, StringMap) {
 	totalpf := float32(p.personCount)
+	if p.personCount == 0 {
+		totalpf = 1
+	}
 	totaluf := float32(p.unionCount)
+	if p.unionCount == 0 {
+		totaluf = 1
+	}
 	unknownSexUnion := p.unionCount - (p.sameSexCount + p.diffSexCount)
 
 	return categoryGeneral, StringMap{

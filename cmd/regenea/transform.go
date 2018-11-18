@@ -17,10 +17,7 @@ func getTransformCommand() cli.Command {
 		Name:  "transform",
 		Usage: "perform a transformation between 2 formats or 2 versions of the same format (supported: genea)",
 		Flags: []cli.Flag{
-			cli.StringFlag{
-				Name:  "in",
-				Usage: "input file to transform (default to stdin)",
-			},
+			inField,
 			cli.StringFlag{
 				Name:  "inform",
 				Usage: "format of the input file",
@@ -42,6 +39,7 @@ func getTransformCommand() cli.Command {
 				Name:  "pretty",
 				Usage: "prettify the output",
 			},
+			subsetField,
 		},
 		Action: doTransformCommand,
 	}
@@ -62,7 +60,7 @@ func doTransformCommand(ctxt *cli.Context) error {
 	}
 
 	inform := ctxt.String("inform")
-	tree, inversion, err := helperRead(ctxt.String("in"), inform)
+	tree, inversion, err := helperRead(ctxt.String("in"), inform, ctxt.String("subset"))
 	if err != nil {
 		return err
 	}

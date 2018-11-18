@@ -8,6 +8,9 @@ import (
 	"github.com/LouisBrunner/regenea/report/procs"
 )
 
+// TODO: add "lived through <historic event>" processor
+// TODO: add chronological timeline
+
 func Process(tree *genea.Tree, out io.Writer, marshaller func(v interface{}) ([]byte, error)) error {
 	processors := []procs.Processor{
 		&procs.Counter{},
