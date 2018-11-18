@@ -20,7 +20,7 @@ func (tree *Tree) validate() error {
 	}
 	return tree.IterateOverUnionErr(func(union *Union) error {
 		if !compareEvents(&union.Begin, union.End) {
-			return fmt.Errorf("relation between `%s` and '%s': start cannot be after end", union.Person1, union.Person2)
+			return fmt.Errorf("relation between `%v` and `%v`: start cannot be after end", union.Person1, union.Person2)
 		}
 		return nil
 	})

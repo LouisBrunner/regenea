@@ -17,7 +17,7 @@ func Process(tree *genea.Tree, out io.Writer, marshaller func(v interface{}) ([]
 	}
 
 	processors2 := make([]core.Processor, len(processors), len(processors))
-	for i, _ := range processors {
+	for i := range processors {
 		processors2[i] = core.Processor(processors[i])
 	}
 
