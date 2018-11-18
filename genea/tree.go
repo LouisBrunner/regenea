@@ -6,6 +6,8 @@ import (
 	"github.com/LouisBrunner/regenea/genea/json"
 )
 
+// TODO: add way to get subset of a tree (all parents, siblings (child included) and children)
+
 type EventCore struct {
 	Date     time.Time
 	Location string

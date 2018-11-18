@@ -49,41 +49,41 @@ func (p *Counter) ProcessUnion(union *genea.Union) {
 func (p *Counter) Finish() {
 }
 
-func (p *Counter) Output() (string, interface{}) {
+func (p *Counter) Output() (string, StringMap) {
 	totalpf := float32(p.personCount)
 	totaluf := float32(p.unionCount)
 	unknownSexUnion := p.unionCount - (p.sameSexCount + p.diffSexCount)
 
-	return CategoryGeneral, map[string]interface{}{
-		"People count": map[string]interface{}{
+	return categoryGeneral, StringMap{
+		"People count": StringMap{
 			"Total": p.personCount,
 			"Men":   p.manCount,
 			"Women": p.womanCount,
 			"Other": p.otherCount,
 		},
-		"People ratio": map[string]interface{}{
+		"People ratio": StringMap{
 			"Men":   float32(p.manCount) / totalpf,
 			"Women": float32(p.womanCount) / totalpf,
 			"Other": float32(p.otherCount) / totalpf,
 		},
-		"Unions count": map[string]interface{}{
+		"Unions count": StringMap{
 			"Total": p.unionCount,
-			"Kind": map[string]interface{}{
+			"Kind": StringMap{
 				"Wedding": p.weddingCount,
 				"Civil":   p.civilCount,
 			},
-			"Sex": map[string]interface{}{
+			"Sex": StringMap{
 				"Same":      p.sameSexCount,
 				"Different": p.diffSexCount,
 				"Unknown":   unknownSexUnion,
 			},
 		},
-		"Unions ratio": map[string]interface{}{
-			"Kind": map[string]interface{}{
+		"Unions ratio": StringMap{
+			"Kind": StringMap{
 				"Wedding": float32(p.weddingCount) / totaluf,
 				"Civil":   float32(p.civilCount) / totaluf,
 			},
-			"Sex": map[string]interface{}{
+			"Sex": StringMap{
 				"Same":      float32(p.sameSexCount) / totaluf,
 				"Different": float32(p.diffSexCount) / totaluf,
 				"Unknown":   float32(unknownSexUnion) / totaluf,

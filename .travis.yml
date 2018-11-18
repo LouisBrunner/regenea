@@ -4,6 +4,9 @@ go:
   - 1.9
   - tip
 
+env:
+  - OOGOPATH=no
+
 before_install:
   - make setup get
 

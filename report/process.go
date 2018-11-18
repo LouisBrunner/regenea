@@ -1,4 +1,4 @@
-package stats
+package report
 
 import (
 	"io"
@@ -11,8 +11,7 @@ import (
 func Process(tree *genea.Tree, out io.Writer, marshaller func(v interface{}) ([]byte, error)) error {
 	processors := []procs.Processor{
 		&procs.Counter{},
-		&procs.Oldest{},
-		&procs.Youngest{},
+		&procs.Ages{},
 		&procs.Weird{},
 	}
 
@@ -23,13 +22,15 @@ func Process(tree *genea.Tree, out io.Writer, marshaller func(v interface{}) ([]
 
 	core.ProcessTree(tree, processors2)
 
-	result := map[string][]interface{}{}
+	result := map[string]procs.StringMap{}
 	for _, proc := range processors {
 		category, content := proc.Output()
 		if _, ok := result[category]; !ok {
-			result[category] = []interface{}{}
+			result[category] = procs.StringMap{}
 		}
-		result[category] = append(result[category], content)
+		for k, v := range content {
+			result[category][k] = v
+		}
 	}
 	output, err := marshaller(result)
 	if err != nil {

@@ -16,6 +16,6 @@ func (p *NAME) ProcessUnion(union *genea.Union) {
 func (p *NAME) Finish() {
 }
 
-func (p *NAME) Output() (string, interface{}) {
-	return CategoryGeneral, nil
+func (p *NAME) Output() (string, StringMap) {
+	return categoryGeneral, nil
 }

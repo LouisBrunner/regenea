@@ -34,7 +34,7 @@ func doReportCommand(ctxt *cli.Context) error {
 		return err
 	}
 
-	return stats.Process(tree, os.Stdout, func(v interface{}) ([]byte, error) {
+	return report.Process(tree, os.Stdout, func(v interface{}) ([]byte, error) {
 		return json.MarshalIndent(v, "", "  ")
 	})
 }

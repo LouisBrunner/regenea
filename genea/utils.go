@@ -2,6 +2,7 @@ package genea
 
 import (
 	"bytes"
+	"time"
 
 	"github.com/LouisBrunner/regenea/genea/json"
 )
@@ -49,7 +50,11 @@ func (p *Person) Pronouns() (noun string, accusatif string, possessive string) {
 }
 
 func (e *EventCore) FormatDate() string {
-	return e.Date.Format(json.DateFormat)
+	return FormatDate(e.Date)
+}
+
+func FormatDate(tm time.Time) string {
+	return tm.Format(json.DateFormat)
 }
 
 func (tree *Tree) IterateOverUnionErr(do func(union *Union) error) error {

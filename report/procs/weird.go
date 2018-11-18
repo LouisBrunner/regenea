@@ -2,19 +2,19 @@ package procs
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/LouisBrunner/regenea/genea"
 
 	"github.com/dustin/go-humanize"
 )
 
-const day = 24 * time.Hour
-
 type buRelation struct {
 	uncle  *genea.Person
 	nephew *genea.Person
 }
+
+// TODO: orphaned at birth?
+// TODO: incest calculation?
 
 type Weird struct {
 	posthumous   []*genea.Person
@@ -25,13 +25,13 @@ type Weird struct {
 func (p *Weird) ProcessPerson(person *genea.Person) {
 	if genea.EventIsValid(&person.Birth) {
 		if person.Father != nil && genea.EventIsValid(person.Father.Death) {
-			if person.Birth.Date.Unix() > person.Father.Death.Date.Unix() {
+			if person.Birth.Date.After(person.Father.Death.Date) {
 				p.posthumous = append(p.posthumous, person)
 			}
 		}
 
 		if person.Family != nil && genea.EventIsValid(&person.Family.Begin) {
-			if person.Birth.Date.Add(-280*day).Unix() < person.Family.Begin.Date.Unix() {
+			if person.Birth.Date.Add(-280 * humanize.Day).Before(person.Family.Begin.Date) {
 				p.fastWeddings = append(p.fastWeddings, person)
 			}
 		}
@@ -39,7 +39,7 @@ func (p *Weird) ProcessPerson(person *genea.Person) {
 		var parentNephew *genea.Person
 		for _, sibling := range person.Siblings {
 			for _, nephew := range sibling.Children {
-				if genea.EventIsValid(&nephew.Birth) && person.Birth.Date.Unix() > nephew.Birth.Date.Unix() {
+				if genea.EventIsValid(&nephew.Birth) && person.Birth.Date.After(nephew.Birth.Date) {
 					parentNephew = nephew
 					break
 				}
@@ -61,7 +61,7 @@ func (p *Weird) ProcessUnion(union *genea.Union) {
 func (p *Weird) Finish() {
 }
 
-func (p *Weird) Output() (string, interface{}) {
+func (p *Weird) Output() (string, StringMap) {
 	posthumous := make([]string, len(p.posthumous))
 	for i, ph := range p.posthumous {
 		_, pronoun, _ := ph.Pronouns()
@@ -71,7 +71,7 @@ func (p *Weird) Output() (string, interface{}) {
 			ph.Birth.FormatDate(),
 			pronoun,
 			ph.Father.Death.FormatDate(),
-			humanize.RelTime(ph.Birth.Date, ph.Father.Death.Date, "earlier", "later"),
+			humanize.CustomRelTime(ph.Birth.Date, ph.Father.Death.Date, "earlier", "later", myMagnitudes),
 		)
 	}
 
@@ -84,7 +84,7 @@ func (p *Weird) Output() (string, interface{}) {
 			fw.Birth.FormatDate(),
 			pronoun,
 			fw.Family.Begin.FormatDate(),
-			humanize.RelTime(fw.Birth.Date, fw.Family.Begin.Date, "earlier", "later"),
+			humanize.CustomRelTime(fw.Birth.Date, fw.Family.Begin.Date, "earlier", "later", myMagnitudes),
 		)
 	}
 
@@ -96,14 +96,14 @@ func (p *Weird) Output() (string, interface{}) {
 			bu.uncle.Name(),
 			bu.uncle.Birth.FormatDate(),
 			pronounUncle,
-			"uncle", // TODO: until to describe relation
+			"uncle/aunt", // TODO: need a function to describe relation
 			bu.nephew.Name(),
 			bu.nephew.Birth.FormatDate(),
-			humanize.RelTime(bu.uncle.Birth.Date, bu.nephew.Birth.Date, "earlier", "later"),
+			humanize.CustomRelTime(bu.uncle.Birth.Date, bu.nephew.Birth.Date, "earlier", "later", myMagnitudes),
 		)
 	}
 
-	return CategoryGeneral, map[string]interface{}{
+	return categoryGeneral, StringMap{
 		"Posthumous children":                   posthumous,
 		"Children conceived before the wedding": fastWeddings,
 		"Baby uncles/aunts":                     babyUncles,
