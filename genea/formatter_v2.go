@@ -6,8 +6,12 @@ import (
 
 func serializeEventCore(event *EventCore) *json.EventCommon {
 	date := json.Date(event.Date)
+	datePtr := &date
+	if event.Date.IsZero() {
+		datePtr = nil
+	}
 	return &json.EventCommon{
-		Date:     &date,
+		Date:     datePtr,
 		Location: event.Location,
 		Source:   event.Source,
 	}

@@ -18,8 +18,9 @@ func getCLI() *cli.App {
 	app.Commands = []cli.Command{
 		getCheckCommand(),
 		getTransformCommand(),
+		getQueryCommand(),
 		getReportCommand(),
-		// getDisplayCommand(),
+		getDisplayCommand(),
 	}
 
 	return app

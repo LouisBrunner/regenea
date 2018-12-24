@@ -8,34 +8,42 @@ import (
 )
 
 func EventIsValid(event *EventCore) bool {
-	return event != nil && !event.Date.IsZero()
+	return event != nil && event.IsValid()
 }
 
-func (p *Person) Name() string {
+func (event *EventCore) IsValid() bool {
+	return !event.Date.IsZero()
+}
+
+func ConstructName(names *json.Names) string {
 	buf := &bytes.Buffer{}
-	if p.Names.First != "" {
-		buf.WriteString(p.Names.First)
+	if names.First != "" {
+		buf.WriteString(names.First)
 	}
-	if p.Names.Middle != "" {
+	if names.Middle != "" {
 		if buf.Len() != 0 {
 			buf.WriteString(" ")
 		}
-		buf.WriteString(p.Names.Middle)
+		buf.WriteString(names.Middle)
 	}
-	if p.Names.Last != "" {
+	if names.Last != "" {
 		if buf.Len() != 0 {
 			buf.WriteString(" ")
 		}
-		buf.WriteString(p.Names.Last)
+		buf.WriteString(names.Last)
 	}
-	if p.Names.Alternative != "" {
+	if names.Alternative != "" {
 		if buf.Len() != 0 {
 			buf.WriteString(", ")
 		}
 		buf.WriteString("aka ")
-		buf.WriteString(p.Names.Alternative)
+		buf.WriteString(names.Alternative)
 	}
 	return buf.String()
+}
+
+func (p *Person) Name() string {
+	return ConstructName(&p.Names)
 }
 
 func (p *Person) Pronouns() (noun string, accusatif string, possessive string) {

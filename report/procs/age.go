@@ -4,22 +4,11 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/LouisBrunner/regenea/core"
 	"github.com/LouisBrunner/regenea/genea"
 
 	"github.com/dustin/go-humanize"
 )
-
-type average struct {
-	sum   float32
-	count uint64
-}
-
-func (avg *average) calculate() float32 {
-	if avg.count == 0 {
-		return 0
-	}
-	return avg.sum / float32(avg.count)
-}
 
 type personAge struct {
 	person *genea.Person
@@ -50,14 +39,14 @@ type Ages struct {
 	oldestWoman personAge
 	oldestOther personAge
 
-	meanAge      average
-	meanAgeMen   average
-	meanAgeWomen average
-	meanAgeOther average
+	meanAge      core.Average
+	meanAgeMen   core.Average
+	meanAgeWomen core.Average
+	meanAgeOther core.Average
 
 	oldestUnion   unionAge
 	youngestUnion unionAge
-	meanAgeUnion  average
+	meanAgeUnion  core.Average
 }
 
 func (p *Ages) ProcessPerson(person *genea.Person) {
@@ -80,8 +69,8 @@ func (p *Ages) ProcessPerson(person *genea.Person) {
 		p.youngest.person = person
 		p.youngest.age = age
 	}
-	p.meanAge.sum += agef
-	p.meanAge.count += 1
+	p.meanAge.Sum += agef
+	p.meanAge.Count += 1
 
 	switch person.Sex {
 	case genea.SexMale:
@@ -93,8 +82,8 @@ func (p *Ages) ProcessPerson(person *genea.Person) {
 			p.youngestMan.person = person
 			p.youngestMan.age = age
 		}
-		p.meanAgeMen.sum += agef
-		p.meanAgeMen.count += 1
+		p.meanAgeMen.Sum += agef
+		p.meanAgeMen.Count += 1
 	case genea.SexFemale:
 		if p.oldestWoman.person == nil || p.oldestWoman.age < age {
 			p.oldestWoman.person = person
@@ -104,8 +93,8 @@ func (p *Ages) ProcessPerson(person *genea.Person) {
 			p.youngestWoman.person = person
 			p.youngestWoman.age = age
 		}
-		p.meanAgeWomen.sum += agef
-		p.meanAgeWomen.count += 1
+		p.meanAgeWomen.Sum += agef
+		p.meanAgeWomen.Count += 1
 	default:
 		if p.oldestOther.person == nil || p.oldestOther.age < age {
 			p.oldestOther.person = person
@@ -115,8 +104,8 @@ func (p *Ages) ProcessPerson(person *genea.Person) {
 			p.youngestOther.person = person
 			p.youngestOther.age = age
 		}
-		p.meanAgeOther.sum += agef
-		p.meanAgeOther.count += 1
+		p.meanAgeOther.Sum += agef
+		p.meanAgeOther.Count += 1
 	}
 }
 
@@ -132,8 +121,8 @@ func (p *Ages) ProcessUnion(union *genea.Union) {
 	age := uint64(end.Unix() - union.Begin.Date.Unix())
 	agef := float32(age) / float32(60) / float32(60) / float32(24) / float32(timeYear)
 
-	p.meanAgeUnion.sum += agef
-	p.meanAgeUnion.count += 1
+	p.meanAgeUnion.Sum += agef
+	p.meanAgeUnion.Count += 1
 
 	if p.oldestUnion.union == nil || p.oldestUnion.age < age {
 		p.oldestUnion.union = union
@@ -233,27 +222,27 @@ func formatUnion(ua unionAge) string {
 func (p *Ages) Output() (string, StringMap) {
 	return categoryGeneral, StringMap{
 		"Youngest": StringMap{
-			"Person": formatPerson(p.youngest),
-			"Man":    formatPerson(p.youngestMan),
-			"Woman":  formatPerson(p.youngestWoman),
-			"Other":  formatPerson(p.youngestOther),
+			"All":   formatPerson(p.youngest),
+			"Man":   formatPerson(p.youngestMan),
+			"Woman": formatPerson(p.youngestWoman),
+			"Other": formatPerson(p.youngestOther),
 		},
 		"Oldest": StringMap{
-			"Person": formatPerson(p.oldest),
-			"Man":    formatPerson(p.oldestMan),
-			"Woman":  formatPerson(p.oldestWoman),
-			"Other":  formatPerson(p.oldestOther),
+			"All":   formatPerson(p.oldest),
+			"Man":   formatPerson(p.oldestMan),
+			"Woman": formatPerson(p.oldestWoman),
+			"Other": formatPerson(p.oldestOther),
 		},
 		"Mean": StringMap{
-			"All":   p.meanAge.calculate(),
-			"Men":   p.meanAgeMen.calculate(),
-			"Women": p.meanAgeWomen.calculate(),
-			"Other": p.meanAgeOther.calculate(),
+			"All":   p.meanAge.Calculate(),
+			"Men":   p.meanAgeMen.Calculate(),
+			"Women": p.meanAgeWomen.Calculate(),
+			"Other": p.meanAgeOther.Calculate(),
 		},
 		"Union": StringMap{
 			"Longest":  formatUnion(p.oldestUnion),
 			"Shortest": formatUnion(p.youngestUnion),
-			"Mean age": p.meanAgeUnion.calculate(),
+			"Mean age": p.meanAgeUnion.Calculate(),
 		},
 	}
 }
